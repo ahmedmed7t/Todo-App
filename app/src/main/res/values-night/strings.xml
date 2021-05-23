@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="mock_title">Todo item Title</string>
+    <string name="enter_todo_title">Enter Todo Title</string>
+</resources>

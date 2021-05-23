@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <TextView
+        android:id="@+id/Todo_List_Item_Title_TextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/Todo_List_Item_Date_Time_TextView"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="5dp"
+        android:textSize="20sp"
+        android:textColor="@color/black_de_transparent"
+        tools:text="@string/mock_title"/>
+
+
+    <TextView
+        android:id="@+id/Todo_List_Item_Date_Time_TextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/Todo_List_Item_Title_TextView"
+        app:layout_constraintBottom_toTopOf="@id/Todo_List_Item_Description_TextView"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginEnd="10dp"
+        android:textSize="12sp"
+        android:textColor="@color/black_de_transparent"
+        tools:text="@string/mock_date"/>
+
+    <TextView
+        android:id="@+id/Todo_List_Item_Description_TextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/Todo_List_Item_Title_TextView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="5dp"
+        android:layout_marginStart="16dp"
+        android:textSize="14sp"
+        android:maxLines="2"
+        android:ellipsize="end"
+        android:textColor="@color/black_de_transparent"
+        tools:text="@string/mock_description"/>
+
+    <View
+        android:id="@+id/Todo_List_Item_Divider_Line_View"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/Todo_List_Item_Description_TextView"
+        android:layout_marginTop="12dp"
+        android:background="@color/gray_9a_transparent"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

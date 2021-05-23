@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">todo app</string>
+    <string name="mock_description">This is a description for each to do item in the list it should be maximum two lines and after the end of these two lines should be dots</string>
+    <string name="mock_title">Todo item Title</string>
+    <string name="mock_date">10.00 AM 25/1/2019</string>
+    <string name="empty_state_message">No Item\'s Found \n Let\'s add a new One</string>
+    <string name="item_deleted">Item Deleted</string>
+    <string name="todo_title">Todo Title</string>
+    <string name="enter_todo_title">Enter Todo Title</string>
+    <string name="todo_description">Todo Description</string>
+    <string name="enter_todo_description">Enter Todo Description</string>
+    <string name="date_hint">/     /</string>
+    <string name="select_time">Select Time</string>
+    <string name="save">Save</string>
+    <string name="todo_title_is_required">Todo Title is Required</string>
+    <string name="todo_description_is_required">Todo Description is Required</string>
+    <string name="time_is_required">Time is Required</string>
+    <string name="item_saved">Item Saved</string>
+    <string name="channel_name">TODO_CHANNEL</string>
+    <string name="channel_description">TODO_DESCRIPTION</string>
+</resources>

@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ui.addItemUi.AddTodoItemActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/Add_New_Todo_Title_Label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="32dp"
+            android:text="@string/todo_title"
+            android:textColor="@color/black_de_transparent" />
+
+        <EditText
+            android:id="@+id/Add_New_Todo_Title_EditText"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/edit_text_border"
+            android:hint="@string/enter_todo_title"
+            android:paddingStart="10dp" />
+
+        <TextView
+            android:id="@+id/Add_New_Todo_Title_Error_TextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/todo_title_is_required"
+            android:textColor="@color/error"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="5dp"
+            android:visibility="gone"
+            />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="8"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/Add_New_Todo_Description_Label"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:text="@string/todo_description"
+            android:textColor="@color/black_de_transparent" />
+
+        <EditText
+            android:id="@+id/Add_New_Todo_Description_EditText"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="7"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="16dp"
+            android:gravity="top"
+            android:paddingTop="5dp"
+            android:background="@drawable/edit_text_border"
+            android:hint="@string/enter_todo_description"
+            android:paddingStart="10dp" />
+
+        <TextView
+            android:id="@+id/Add_New_Todo_Description_Error_TextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/todo_description_is_required"
+            android:textColor="@color/error"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="5dp"
+            android:visibility="gone"
+            />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="9"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/Add_New_Todo_Time_Label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="32dp"
+            android:text="@string/select_time"
+            android:textColor="@color/black_de_transparent" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:paddingEnd="40dp"
+            android:layout_marginTop="5dp"
+            >
+
+            <EditText
+                android:id="@+id/Add_New_Todo_Time_EditText"
+                android:layout_width="0dp"
+                android:layout_weight="7"
+                android:layout_height="35dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/edit_text_border"
+                android:clickable="false"
+                android:cursorVisible="false"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:hint="@string/date_hint"
+                android:paddingStart="10dp" />
+
+            <ImageView
+                android:id="@+id/Add_New_Todo_Time_Icon_Click"
+                android:layout_width="0dp"
+                android:layout_weight="2"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_baseline_calendar_today_24"/>
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/Add_New_Todo_Time_Error_TextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/time_is_required"
+            android:textColor="@color/error"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="5dp"
+            android:visibility="gone"
+            />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/Add_New_Todo_Save_TextView"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_marginBottom="32dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:background="@color/light_blue"
+        android:textColor="@color/white"
+        android:text="@string/save"
+        android:gravity="center"
+        android:textSize="21sp"
+        />
+
+</LinearLayout>
