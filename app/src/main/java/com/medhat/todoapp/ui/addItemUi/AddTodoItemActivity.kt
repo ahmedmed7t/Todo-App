@@ -1,11 +1,7 @@
 package com.medhat.todoapp.ui.addItemUi
 
-import android.app.AlarmManager
 import android.app.DatePickerDialog
-import android.app.PendingIntent
 import android.app.TimePickerDialog
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -13,7 +9,6 @@ import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.medhat.todoapp.R
-import com.medhat.todoapp.Services.NotificationBroadCastReceiver
 import com.medhat.todoapp.Utils.DateUtils
 import com.medhat.todoapp.data.model.TodoModel
 import com.medhat.todoapp.ui.listUi.MainActivity
@@ -47,10 +42,9 @@ class AddTodoItemActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListe
         setContentView(R.layout.activity_add_todo_item)
         initViews()
 
-        val myIntent = intent
-        if (myIntent.hasExtra(MainActivity.TODO_ID)) {
+        if (intent.hasExtra(MainActivity.TODO_ID)) {
             isNewItem = false
-            showOldDate(getTodoItemModelFromIntent(myIntent))
+            showOldDate(addViewModel.getTodoItemModelFromIntent(intent))
         } else {
             isNewItem = true
         }
@@ -87,9 +81,27 @@ class AddTodoItemActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListe
 
     private fun listenToViewModelModules() {
         addViewModel.isProcessFinished.observe(this, androidx.lifecycle.Observer {
-            if (it) {
-                Toast.makeText(this, getString(R.string.item_saved), Toast.LENGTH_LONG).show()
-                onBackPressed()
+
+            if (!isNewItem) {
+                val oldTime = DateUtils.getDateFromString(intent.getStringExtra(MainActivity.TODO_TIME)
+                        ?: "")
+                        ?: Date()
+                addViewModel.cancelAlarm(oldTime.time.toInt(),this)
+            }
+
+            val time: Long = it.time.time - (Date().time + (10 * 60 * 1000))
+            val differenceBetweenTwoTimes = it.time.time - (Date().time)
+            if (differenceBetweenTwoTimes >= (10 * 60 * 1000))
+                addViewModel.startAlert(time, it.time.time.toInt(), it.title,
+                        it.description, this)
+
+            Toast.makeText(this, getString(R.string.item_saved), Toast.LENGTH_LONG).show()
+            onBackPressed()
+        })
+
+        addViewModel.validationError.observe(this, androidx.lifecycle.Observer {
+            if(it){
+                showErrors()
             }
         })
     }
@@ -99,16 +111,6 @@ class AddTodoItemActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListe
         descriptionEditText.setText(item.description)
         timeEditText.setText(DateUtils.getFormattedDate(item.time))
     }
-
-    private fun getTodoItemModelFromIntent(myIntent: Intent): TodoModel =
-            TodoModel(
-                    myIntent.getIntExtra(MainActivity.TODO_ID, 0),
-                    myIntent.getStringExtra(MainActivity.TODO_TITLE) ?: "",
-                    myIntent.getStringExtra(MainActivity.TODO_DESCRIPTION) ?: "",
-                    DateUtils.getDateFromString(myIntent.getStringExtra(MainActivity.TODO_TIME)
-                            ?: "")
-                            ?: Date()
-            )
 
     private fun opeDateTimeDialog() {
         val calendar: Calendar = Calendar.getInstance()
@@ -122,50 +124,20 @@ class AddTodoItemActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListe
 
     private fun handleSaveButtonClick() {
         saveButton.setOnClickListener {
-            if (titleEditText.text.toString().isNotEmpty() &&
-                    descriptionEditText.text.toString().isNotEmpty() &&
-                    timeEditText.text.toString().isNotEmpty()
-            ) {
-                val todoModel = collectTodoModel()
-                addViewModel.addTodoItem(todoModel, isNewItem)
+            var oldId  : Int? = null
+            if(!isNewItem)
+               oldId = intent.getIntExtra(MainActivity.TODO_ID, 0)
 
-                if (!isNewItem) {
-                    val oldTime = DateUtils.getDateFromString(intent.getStringExtra(MainActivity.TODO_TIME)
-                            ?: "")
-                            ?: Date()
-                    cancelAlarm(oldTime.time.toInt())
-                }
-
-                val time: Long = todoModel.time.time - (Date().time + (10 * 60 * 1000))
-                val differenceBetweenTwoTimes = todoModel.time.time - (Date().time)
-                if (differenceBetweenTwoTimes >= (10 * 60 * 1000))
-                    startAlert(time, todoModel.time.time.toInt(), todoModel.title, todoModel.description)
-            } else {
-                showErrors()
-            }
+           addViewModel.canAddTodOItem(titleEditText.text.toString(), titleEditText.text.toString(),
+                    timeEditText.text.toString(), oldId, isNewItem )
         }
     }
 
-    private fun collectTodoModel(): TodoModel {
-        val model = TodoModel(
-                null,
-                titleEditText.text.toString(),
-                descriptionEditText.text.toString(),
-                todoDate ?: Date()
-        )
-        if (!isNewItem)
-            model.id = intent.getIntExtra(MainActivity.TODO_ID, 0)
-        return model
-    }
-
-
     private fun trackTodoTitle() {
         titleEditText.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-            }
+            override fun afterTextChanged(s: Editable?) {}
 
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-            }
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 if (s.toString().isNotEmpty())
@@ -176,11 +148,9 @@ class AddTodoItemActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListe
 
     private fun trackTodoDescription() {
         descriptionEditText.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-            }
+            override fun afterTextChanged(s: Editable?) {}
 
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-            }
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 if (s.toString().isNotEmpty())
@@ -191,11 +161,9 @@ class AddTodoItemActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListe
 
     private fun trackTodoTime() {
         timeEditText.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-            }
+            override fun afterTextChanged(s: Editable?) {}
 
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-            }
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 if (s.toString().isNotEmpty())
@@ -245,27 +213,4 @@ class AddTodoItemActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListe
         timeEditText.setText(dateTime)
     }
 
-    private fun startAlert(time: Long, id: Int, title: String, content: String) {
-        val intent = Intent(this, NotificationBroadCastReceiver::class.java)
-        intent.putExtra("Title", title)
-        intent.putExtra("Content", content)
-        val pendingIntent = PendingIntent.getBroadcast(
-                this.applicationContext, id, intent, 0
-        )
-        val alarmManager =
-                getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        alarmManager[AlarmManager.RTC_WAKEUP, System.currentTimeMillis()
-                + time] = pendingIntent
-    }
-
-    private fun cancelAlarm(id: Int) {
-        val alarmManager =
-                getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        val myIntent = Intent(applicationContext, NotificationBroadCastReceiver::class.java)
-        val pendingIntent = PendingIntent.getBroadcast(
-                applicationContext, id, myIntent, 0
-        )
-
-        alarmManager.cancel(pendingIntent)
-    }
 }

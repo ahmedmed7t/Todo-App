@@ -31,7 +31,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
 class MainActivity : AppCompatActivity() {
-    val mainViewModel: MainViewModel by viewModel()
+    private val mainViewModel: MainViewModel by viewModel()
 
     companion object {
         val TODO_ID = "TODO_ID"
@@ -41,25 +41,24 @@ class MainActivity : AppCompatActivity() {
         val CHANNEL_ID = "TODO_CHANNEL_ID"
     }
 
-
     lateinit var recyclerView: RecyclerView
     lateinit var floatingActionButton: FloatingActionButton
     lateinit var todoRecyclerAdapter: TodoRecyclerAdapter
     lateinit var noDataFoundContainer: ConstraintLayout
     lateinit var progressBar: ProgressBar
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         initViews()
 
-        createNotificationChannel()
+        mainViewModel.createNotificationChannel(this)
 
         listenToViewModelValues()
 
         floatingActionButton.setOnClickListener {
             gotoAddScreen(null)
         }
-
     }
 
     override fun onResume() {
@@ -68,7 +67,7 @@ class MainActivity : AppCompatActivity() {
         mainViewModel.getAllTodoList()
     }
 
-    fun initViews() {
+    private fun initViews() {
         recyclerView = findViewById(R.id.Todo_List_Recycler)
         floatingActionButton = findViewById(R.id.Todo_List_Add_Item_Floating)
         noDataFoundContainer = findViewById(R.id.Todo_List_No_Item_Found_Container)
@@ -98,8 +97,7 @@ class MainActivity : AppCompatActivity() {
         })
 
         mainViewModel.toastMessage.observe(this, androidx.lifecycle.Observer {
-            if (it.isNotEmpty())
-                Toast.makeText(this, it, Toast.LENGTH_LONG).show()
+                Toast.makeText(this, getString(it), Toast.LENGTH_LONG).show()
         })
 
         mainViewModel.gotoDetails.observe(this, androidx.lifecycle.Observer {
@@ -107,7 +105,7 @@ class MainActivity : AppCompatActivity() {
         })
 
         mainViewModel.cancelAlarm.observe(this, Observer {
-            cancelAlarm(it)
+            mainViewModel.cancelAlarm(it,this)
         })
     }
 
@@ -134,30 +132,5 @@ class MainActivity : AppCompatActivity() {
     private fun hideNoDataFound() {
         noDataFoundContainer.visibility = View.GONE
         recyclerView.visibility = View.VISIBLE
-    }
-
-    private fun createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val name = getString(R.string.channel_name)
-            val descriptionText = getString(R.string.channel_description)
-            val importance = NotificationManager.IMPORTANCE_DEFAULT
-            val channel = NotificationChannel(CHANNEL_ID, name, importance).apply {
-                description = descriptionText
-            }
-            val notificationManager: NotificationManager =
-                    getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            notificationManager.createNotificationChannel(channel)
-        }
-    }
-
-    private fun cancelAlarm(id: Int) {
-        val alarmManager =
-                getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        val myIntent = Intent(applicationContext, NotificationBroadCastReceiver::class.java)
-        val pendingIntent = PendingIntent.getBroadcast(
-                applicationContext, id, myIntent, 0
-        )
-
-        alarmManager.cancel(pendingIntent)
     }
 }
